@@ -1,0 +1,84 @@
+/*Ge Xiong - Programming Assignment 2 - 6.4.2020*/
+package PA2;
+/*This is class consist of a generic Queue collection.*/
+public class Queue <E> {
+	private QueueNode<E> front, rear; 
+	private int manyNodes;
+	
+	public class QueueNode<Integers> {
+		private E data;
+		private QueueNode<E> link;
+		
+		public QueueNode(E data, QueueNode<E> link) {
+			this.data = data;
+			this.link = link;
+		}
+
+		public E getData() {
+			return data;
+		}
+
+		public void setData(E element) {
+			this.data = element;
+		}
+
+		public QueueNode<E> getLink() {
+			return link;
+		}
+
+		public void setLink(QueueNode<E> link) {
+			this.link = link;
+		}
+
+		public void addNodeAfter(E element) {
+			this.link = new QueueNode<E>(element, this.link);
+		}
+		
+		public void removeNodeAfter() {
+			this.link = this.link.link;
+		}
+	}
+	
+	public Queue(){
+		this.manyNodes = 0;
+	}
+	//adds an element to the end of the queue 
+	public void enqueue(E element) {
+		if (isEmpty()) {
+			front = new QueueNode<E>(element, null);
+			rear = front;
+			
+		}
+		else {
+			rear.addNodeAfter(element);
+			rear = rear.getLink();
+		}
+		manyNodes++; 
+	}
+	//removes the first element of the queue (FIFO)
+	public E dequeue() {
+		E answer;
+		if (manyNodes == 0)
+			System.out.println("Queue Underflow"); 
+		
+		answer = front.getData(); 
+		front = front.getLink(); 
+		manyNodes--; 
+		
+		if (manyNodes == 0) 
+			rear = null; 
+		
+		return answer;
+	}
+	//checks if the list is empty 
+	public boolean isEmpty() {
+		if (front == null)
+			return true;
+		else 
+			return false;
+	}
+	
+	public int size() {
+		return this.manyNodes;
+	}	
+}
