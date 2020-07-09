@@ -1,0 +1,43 @@
+/*Ge Xiong - Programming Assignment 2 - 6.4.2020*/
+package PA2;
+/*Collects data from processor class and prints the statements.*/
+public class ThreadStatisticsSetup {
+	private static Queue<Integer> queue = new Queue<Integer>();
+	private static String[] colors = {"Red", "Orange", "Yellow", "Green", "Blue"}; 
+	private static int[] colorTotal = new int[5];
+
+    public static void addToQueue (int red, int orange, int yellow, int green, int blue){
+    	//total will always be the first in queue, followed by this coloring order
+    	//total sums the current thread total
+    	queue.enqueue(red+orange+yellow+green+blue);
+    	queue.enqueue(red);
+		queue.enqueue(orange);
+		queue.enqueue(yellow);
+		queue.enqueue(green);
+		queue.enqueue(blue);
+	}
+    
+	public static void print() {
+		for (int tabulator = 1; tabulator <= 5; tabulator++) {
+			//first one to dequeue will always be total
+			float total = queue.dequeue();
+			for (int i = 0; i < 5; i++) {
+				int value = queue.dequeue();
+				float percent = value/total * 100;
+				System.out.printf("Tabulator: %s Count %s for color %s = %s%%\n", 
+						tabulator, value, colors[i], percent);
+				//stores the total per color 
+				colorTotal[i] += value;
+			}
+		}
+		System.out.println("==Total==");
+		printColorTotal();
+	}
+	static void printColorTotal() {
+		for (int i = 0; i < 5; i++) {
+			//10000 is a fixed # of M&Ms in this assignment
+			float percentage = (float) (colorTotal[i] * 100.00 / 10000);
+			System.out.printf("Color %s composes %.2f%% of the total\n", colors[i], percentage);
+		}
+	}
+}
