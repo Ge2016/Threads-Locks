@@ -1,0 +1,31 @@
+/*Ge Xiong - Programming Assignment 2 - 6.4.2020*/
+package PA2;
+/*The driver class creates an integer queue of 10,000 M&M inputs of 0-4.
+ * Then it creates 5 threads to process and prints the total percentage of colored M&Ms in the collection.*/
+public class QueueDriver {
+	public static void main(String[] args) {
+		Queue<Integer> collection = new Queue<Integer>();
+        for (int index = 0; index < 10000; index++) {
+            int mm = ((int) (Math.random() * 10000)) % 5;
+            Integer integ = new Integer(mm);
+            collection.enqueue(integ);
+        }
+        RequestProcessor processor = new RequestProcessor(collection);
+        int numberOfThreads = 5;
+        Thread[] threads = new Thread[numberOfThreads];
+        for (int index = 0; index < threads.length; index++) {
+            threads[index] = new Thread(processor);
+            threads[index].start();
+        }
+        try {
+            for (int index = 0; index < threads.length; index++) {
+                //program will wait until all 5 threads are over 
+            	threads[index].join();
+        }
+        } catch(InterruptedException ie) {
+            ie.printStackTrace();
+        }
+        ThreadStatisticsSetup.print();
+    }
+	
+}
