@@ -1,0 +1,52 @@
+/*Ge Xiong - Programming Assignment 2 - 6.4.2020*/
+package PA2;
+import java.util.concurrent.locks.ReentrantLock;
+/*The processor class makes sure that the threads run concurrently by creating locks.
+ * It collects the queue (from driver class) and organize the M&Ms by color. 
+ * Then it calls the threadStat class and sends the info over.*/
+public class RequestProcessor implements Runnable{
+	private Queue<Integer> inputCollection;
+	private ReentrantLock outputListLock = new ReentrantLock(); 
+	private ReentrantLock collectionLock = new ReentrantLock();
+
+	public RequestProcessor(Queue<Integer> collection) {
+		this.inputCollection = collection;  
+	}
+	
+	public void run() {
+		boolean hasData = true;
+		int red = 0, orange = 0, yellow = 0, green = 0, blue = 0;
+
+		while (hasData) {
+			collectionLock.lock();
+			int mm = -1;
+			//if there are data in collection, then dequeue the mm
+            try {
+            	if (inputCollection.isEmpty()) {
+            		hasData = false;
+               } else {
+            	//get each mm and add to its color group 
+            	mm =  inputCollection.dequeue();}
+            } finally {
+            	collectionLock.unlock();
+            }
+            //add the mm to its color collection
+            if (hasData) {
+	            if (mm == 0)
+	         	   red++;
+	            else if (mm == 1)
+	         	   orange++;
+	            else if (mm == 2)
+	         	   yellow++;
+	            else if (mm == 3)
+	         	   green++;
+	            else if (mm == 4)
+	         	   blue++;
+            }
+		}
+		// end of while loop, send info over to threadStat class
+		outputListLock.lock();
+	    ThreadStatisticsSetup.addToQueue(red, orange, yellow, green, blue);
+	    outputListLock.unlock();
+	}
+}
